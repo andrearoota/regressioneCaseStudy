@@ -65,3 +65,45 @@ tabella.Latitudine=[]
 tabella.Longitudine=[]
 tabella.NOx=[]
 tabella.O3=[]
+
+tabella.Data=[]
+
+
+dati = t(:,{'Data','NO2','PM10','Temperatura','Umidita_relativa','Pioggia_cum','Benzina_vendita_rete_ord','Gasolio_motori_rete_ord','Gasolio_riscaldamento'})
+
+a1=fitlm(dati,'ResponseVar','NO2','PredictorVars',{'Temperatura','Umidita_relativa','Pioggia_cum','Benzina_vendita_rete_ord','Gasolio_motori_rete_ord','Gasolio_riscaldamento'})
+plot(a1)
+%sinceramente non so come faccia a rappresentare una funzione di 6 variabili in 2 dimensioni
+histfit(a1.Residuals.Raw)
+
+a2=fitlm(dati,'ResponseVar','PM10','PredictorVars',{'Temperatura','Umidita_relativa','Pioggia_cum','Benzina_vendita_rete_ord','Gasolio_motori_rete_ord','Gasolio_riscaldamento'})
+plot(a2)
+histfit(a2.Residuals.Raw)
+
+%al profe piace stepwise
+%la differenza è che calcola da sola quali variabili togliere e quali
+%aggiungere. In questo caso toglie la pioggia e la benzina mentre aggiunge
+%il prodotto tra la temperatura e il gasolio motori
+a1=stepwiselm(tabella,"linear","ResponseVar","NO2")
+plot(a1)
+histfit(a1.Residuals.Raw)
+
+tabella2=tabella;
+tabella2.PM10=[];
+
+%uguale ma senza PM10 come "causa"
+b1=stepwiselm(tabella2,"linear","ResponseVar","NO2")
+plot(b1)
+histfit(b1.Residuals.Raw)
+
+a2=stepwiselm(tabella,"linear","ResponseVar","PM10")
+plot(a2)
+histfit(a2.Residuals.Raw)
+
+tabella3=tabella;
+tabella3.NO2=[];
+
+%uguale ma senza NO2 come "causa"
+b2=stepwiselm(tabella3,"linear","ResponseVar","PM10")
+plot(b2)
+histfit(b2.Residuals.Raw)
